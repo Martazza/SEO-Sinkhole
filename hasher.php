@@ -1,10 +1,5 @@
-#!/usr/bin/php
 <?php
-
-$DICTIONARY_FILE = "words.txt";
-$words = file( $DICTIONARY_FILE );
-$count = count( $words );
-$ALGO = "sha512";
+require 'config.php';
 
 function sentencer( $sentence, $words, $count, $ALGO = "crc32"){
 	$strArr = str_split($sentence);//explode(" ", $sentence);
@@ -46,7 +41,14 @@ function ToHex($string)
 	return $hex;
 }
 
-function linkGenerator( $sentence, $words, $count, $ALGO = "crc32"){
+function link_generator( $sentence ) {
+
+	// TODO: put this in config file
+	$DICTIONARY_FILE = ABSPATH . '/words.txt';
+	$words = file( $DICTIONARY_FILE );
+	$count = count( $words );
+	$ALGO = "sha512";
+
 	$sentence = sentencer($sentence, $words, $count, $ALGO);
 	$sentenceLenght = strlen($sentence);
 	$wordCount = str_word_count($sentence);
@@ -55,7 +57,11 @@ function linkGenerator( $sentence, $words, $count, $ALGO = "crc32"){
 	$exploded = explode(" ", $sentence);
 	
 	for($i = 0; $i < $wordCount; $i+= $linksPerSentence){
-		$exploded[$i] = '<a href="/' . $exploded[$i]. '">' . $exploded[$i] . "</a>";
+		$url = sprintf(
+			URL_FORMAT,
+			urlencode( $exploded[$i] )
+		);
+		$exploded[$i] = "<a href=\"$url\">{$exploded[$i]}</a>";
 	}
 
 	return implode(" ", $exploded);
@@ -76,6 +82,4 @@ function bcmod( $x, $y )
     while ( strlen($x) ); 
 
     return (int)$mod; 
-} 
-
-echo linkGenerator("Pippo 312312 dad assd ", $words, $count);
+}
