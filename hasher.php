@@ -1,6 +1,7 @@
+#!/usr/bin/php
 <?php
 
-$DICTIONARY_FILE = ".\words.txt";
+$DICTIONARY_FILE = "words.txt";
 $words = file( $DICTIONARY_FILE );
 $count = count( $words );
 $ALGO = "sha512";
@@ -19,7 +20,7 @@ function sentencer( $sentence, $words, $count, $ALGO = "crc32"){
 }
 
 function worder($word){
-	$wordSize = sizeof($word);
+	$wordSize = strlen($word);
 	$pos = $wordSize % 22;
 	$str_hex = strtoupper(ToHex($word));
 	$secondtable = array(43, 31, 11, 79, 43, 36, 53, 54, 91, 55,
@@ -45,4 +46,36 @@ function ToHex($string)
 	return $hex;
 }
 
-echo sentencer("Figurin è mio", $words, $count, $ALGO);
+function linkGenerator( $sentence, $words, $count, $ALGO = "crc32"){
+	$sentence = sentencer($sentence, $words, $count, $ALGO);
+	$sentenceLenght = strlen($sentence);
+	$wordCount = str_word_count($sentence);
+	
+	$linksPerSentence = $sentenceLenght % $wordCount;
+	$exploded = explode(" ", $sentence);
+	
+	for($i = 0; $i < $wordCount; $i+= $linksPerSentence){
+		$exploded[$i] = '<a href="/' . $exploded[$i]. '">' . $exploded[$i] . "</a>";
+	}
+
+	return implode(" ", $exploded);
+}
+
+function bcmod( $x, $y ) 
+{ 
+    // how many numbers to take at once? carefull not to exceed (int) 
+    $take = 5;     
+    $mod = ''; 
+
+    do 
+    { 
+        $a = (int)$mod.substr( $x, 0, $take ); 
+        $x = substr( $x, $take ); 
+        $mod = $a % $y;    
+    } 
+    while ( strlen($x) ); 
+
+    return (int)$mod; 
+} 
+
+echo linkGenerator("Pippo 312312 dad assd ", $words, $count);
