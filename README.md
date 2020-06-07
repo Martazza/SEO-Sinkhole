@@ -1,5 +1,5 @@
 # SEO-Sinkhole
-This tool let you generate from a sentence a brand new sentence.
+This tool let you generate a brand new sentence from a sentence.
 
 ## Installation
 
